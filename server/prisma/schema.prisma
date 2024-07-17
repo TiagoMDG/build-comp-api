@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Contest {
+  id              Int      @id @default(autoincrement())
+  title           String
+  description     String
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+  submissionStart DateTime
+  submissionEnd   DateTime
+  votingStart     DateTime
+  votingEnd       DateTime
+  Entry           Entry[]
+}
+
+model Entry {
+  id          Int      @id @default(autoincrement())
+  contest     Contest  @relation(fields: [contestId], references: [id])
+  contestId   Int
+  title       String
+  description String
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  isVisible   Boolean  @default(false) @map(name: "is_visible")
+  votes       Int      @default(0)
+}
+
+model Vote {
+  id Int @id @default(autoincrement())
+}
