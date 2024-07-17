@@ -29,13 +29,22 @@ module.exports = {
           });
         }
       }
-    } else if(interaction.isButton()) {
+    } else if (interaction.isButton()) {
       if (interaction.customId == "register_abort") {
-
-      } else if (interaction.costomId == "register_submit") {
-
-      } else if (interaction.costomId == "register_author") {
-
+        // Delete a channel
+        try {
+          await interaction.channel.delete({
+            reason: "it sucks",
+          });
+          await interaction.reply("Text channel deleted successfully!");
+        } catch (error) {
+          console.error("Error creating thread:", error);
+          await interaction.reply(
+            "There was an error trying to create a thread."
+          );
+        }
+      } else if (interaction.customId == "register_submit") {
+      } else if (interaction.customId == "register_author") {
       }
     }
   },
