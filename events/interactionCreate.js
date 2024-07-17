@@ -31,8 +31,12 @@ module.exports = {
       }
     } else if(interaction.isButton()) {
       if (interaction.customId == "register_abort") {
-      }
 
+      } else if (interaction.costomId == "register_submit") {
+
+      } else if (interaction.costomId == "register_author") {
+
+      }
     }
   },
 };
