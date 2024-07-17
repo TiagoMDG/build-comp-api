@@ -9,7 +9,7 @@ const {
 const exampleEmbed = {
   id: 652627557,
   title: "Build Competition Submission",
-  description: "Authors: @Meiko @Meiko\nCoordinates: 1322, 533, 23\n\n",
+  description: "Authors: ${authors}\nCoordinates: ${coords}\n\n",
   color: 2326507,
   fields: [],
 };
@@ -137,23 +137,6 @@ module.exports = {
       return;
     }
 
-    // Create a post
-
-    // try {
-    // 	await channel.threads.create({
-    // 		name: `${interaction.user.displayName}'s Entry`,
-    // 		autoArchiveDuration: 60, // auto archive after 1 hour (60 minutes)
-    //         message: 'This is a message',
-    // 		reason: 'A thread for the competition',
-    // 	});
-
-    // 	await interaction.reply('Thread created successfully!');
-    // } catch (error) {
-    // 	console.error('Error creating thread:', error);
-    // 	await interaction.reply('There was an error trying to create a thread.');
-    // }
-
-    // Create a channel
 
     try {
       const channel = await guild.channels.create({

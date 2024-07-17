@@ -1,4 +1,4 @@
-const { Events } = require("discord.js");
+const { Events, ThreadAutoArchiveDuration } = require("discord.js");
 
 module.exports = {
   name: Events.InteractionCreate,
@@ -32,18 +32,41 @@ module.exports = {
     } else if (interaction.isButton()) {
       if (interaction.customId == "register_abort") {
         // Delete a channel
+
         try {
           await interaction.channel.delete({
-            reason: "it sucks",
+            reason: "Build Competition: Aborted",
           });
-          await interaction.reply("Text channel deleted successfully!");
+          await interaction.reply({content:"Submission channel created!", ephemeral:true});
         } catch (error) {
-          console.error("Error creating thread:", error);
-          await interaction.reply(
-            "There was an error trying to create a thread."
-          );
+          console.error("Error arborting submission: ", error);
+          await interaction.reply({content:"Could not create submission channel!", ephemeral:true});
         }
+
       } else if (interaction.customId == "register_submit") {
+        // Retrieve backend stuff (please implement)
+        const title = "placeholder";
+        const entry_id = 69; 
+
+        // Create forum post
+        const forum = interaction.client.channels.cache.get(
+          "1263083208778579999"
+        );
+
+        try {
+          await forum.threads.create({
+            name: `${title}`,
+            message: "Placeholder",
+            autoArchiveDuration: ThreadAutoArchiveDuration.ThreeDays,
+            reason: `Build Competition: Entry ${entry_id} submitted`
+          });
+          await interaction.reply({content:"Thread submitted!", ephemeral:true});
+
+        } catch(error) {
+          console.error("Error creating thread: ", error);
+          await interaction.reply({content:"Could not create thread!", ephemeral:true});
+        }
+
       } else if (interaction.customId == "register_author") {
       }
     }
