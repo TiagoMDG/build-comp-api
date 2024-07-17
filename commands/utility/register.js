@@ -1,30 +1,200 @@
-const { SlashCommandBuilder } = require('discord.js');
+const {
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
+
+const exampleEmbed = {
+  id: 652627557,
+  title: "Build Competition Submission",
+  description: "Authors: @Meiko @Meiko\nCoordinates: 1322, 533, 23\n\n",
+  color: 2326507,
+  fields: [],
+};
+
+const row = new ActionRowBuilder().addComponents(
+  new ButtonBuilder()
+    .setCustomId("register_submit")
+    .setLabel("Submit")
+    .setStyle(ButtonStyle.Success), // Style 3
+  new ButtonBuilder()
+    .setCustomId("register_author")
+    .setLabel("Add Author")
+    .setStyle(ButtonStyle.Primary), // Style 1
+  new ButtonBuilder()
+    .setCustomId("register_coords")
+    .setLabel("Enter Coordinates")
+    .setStyle(ButtonStyle.Primary), // Style 1
+  new ButtonBuilder()
+    .setCustomId("register_abort")
+    .setLabel("Abort")
+    .setStyle(ButtonStyle.Danger) // Style 4
+);
+
+const exampleComponent = {
+  components: [
+    {
+      id: 983242500,
+      type: 1,
+      components: [
+        {
+          id: 815797154,
+          type: 2,
+          style: 3,
+          label: "Submit ",
+          disabled: false,
+          action_set_id: "337908113",
+        },
+        {
+          id: 100809363,
+          type: 2,
+          style: 1,
+          label: "Add Author",
+          action_set_id: "761432492",
+        },
+        {
+          id: 696952441,
+          type: 2,
+          style: 1,
+          label: "Enter Coordinates",
+          action_set_id: "802063996",
+        },
+        {
+          id: 190457283,
+          type: 2,
+          style: 4,
+          label: "Abort",
+          action_set_id: "753622331",
+        },
+      ],
+    },
+  ],
+  actions: {
+    337908113: {
+      actions: [],
+    },
+    753622331: {
+      actions: [],
+    },
+    761432492: {
+      actions: [],
+    },
+    802063996: {
+      actions: [],
+    },
+  },
+};
+
+const exampleAction = {
+  actions: {
+    337908113: {
+      actions: [],
+    },
+    753622331: {
+      actions: [],
+    },
+    761432492: {
+      actions: [],
+    },
+    802063996: {
+      actions: [],
+    },
+  },
+};
 
 module.exports = {
-	data: new SlashCommandBuilder()
-		.setName('register')
-		.setDescription('Register a build for the competition!'),
-	async execute(interaction) {
-		const channel = interaction.client.channels.cache.get('1263083208778579999');
-		
-		if (!channel) {
-			console.error('Channel not found!');
-			await interaction.reply('There was an error finding the channel.');
-			return;
-		}
+  data: new SlashCommandBuilder()
+    .setName("register")
+    .setDescription("Register a build for the competition!")
+    .addStringOption((option) =>
+      option
+        .setName("input")
+        .setDescription("The input to echo back")
+        .setRequired(true)
+    ),
+  async execute(interaction) {
+    // Get a channel
+    const channel = interaction.client.channels.cache.get(
+      "1263083208778579999"
+    );
 
-		try {
-			await channel.threads.create({
-				name: `${interaction.user.displayName}'s Entry`,
-				autoArchiveDuration: 60, // auto archive after 1 hour (60 minutes)
-                message: 'This is a message',
-				reason: 'A thread for the competition',
-			});
+    // Get the guild
+    const guild = interaction.client.guilds.cache.get("1263077356818661387");
 
-			await interaction.reply('Thread created successfully!');
-		} catch (error) {
-			console.error('Error creating thread:', error);
-			await interaction.reply('There was an error trying to create a thread.');
-		}
-	},
+    // Get channel
+    const channelToDelete = interaction.client.channels.cache.get(
+      "1263149356211503127"
+    );
+
+    // Get everybody role id
+    const everyoneRole = guild.roles.everyone.id;
+
+    if (!channel) {
+      console.error("Channel not found!");
+      await interaction.reply("There was an error finding the channel.");
+      return;
+    }
+
+    // Create a post
+
+    // try {
+    // 	await channel.threads.create({
+    // 		name: `${interaction.user.displayName}'s Entry`,
+    // 		autoArchiveDuration: 60, // auto archive after 1 hour (60 minutes)
+    //         message: 'This is a message',
+    // 		reason: 'A thread for the competition',
+    // 	});
+
+    // 	await interaction.reply('Thread created successfully!');
+    // } catch (error) {
+    // 	console.error('Error creating thread:', error);
+    // 	await interaction.reply('There was an error trying to create a thread.');
+    // }
+
+    // Create a channel
+
+    try {
+      const channel = await guild.channels.create({
+        name: "hello",
+        type: 0,
+        parent: "1263077357619777638",
+        permissionOverwrites: [
+          {
+            type: 1,
+            id: interaction.user.id,
+            allow: [
+              PermissionFlagsBits.ViewChannel,
+              PermissionFlagsBits.AttachFiles,
+            ],
+          },
+          {
+            type: 0,
+            id: everyoneRole,
+            deny: [PermissionFlagsBits.ViewChannel],
+          },
+        ],
+      });
+
+      channel.send({ embeds: [exampleEmbed], components: [row] });
+      await interaction.reply("Text channel created successfully!");
+    } catch (error) {
+      console.error("Error creating thread:", error);
+      await interaction.reply("There was an error trying to create a thread.");
+    }
+
+    // Delete a channel
+
+    // try {
+    // 	await channelToDelete.delete({
+    // 		reason: "it sucks",
+    // 	});
+
+    // 	await interaction.reply('Text channel deleted successfully!');
+    // } catch (error) {
+    // 	console.error('Error creating thread:', error);
+    // 	await interaction.reply('There was an error trying to create a thread.');
+    // }
+  },
 };
