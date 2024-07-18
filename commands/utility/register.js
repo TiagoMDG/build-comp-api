@@ -110,37 +110,25 @@ module.exports = {
     .setDescription("Register a build for the competition!")
     .addStringOption((option) =>
       option
-        .setName("input")
-        .setDescription("The input to echo back")
+        .setName("title")
+        .setDescription("Title of your build")
         .setRequired(true)
+        .setMinLength(3)
+        .setMaxLength(50)
     ),
   async execute(interaction) {
-    // Get a channel
-    const channel = interaction.client.channels.cache.get(
-      "1263083208778579999"
-    );
-
     // Get the guild
     const guild = interaction.client.guilds.cache.get("1263077356818661387");
-
     // Get channel
-    const channelToDelete = interaction.client.channels.cache.get(
-      "1263149356211503127"
-    );
-
+    const channelToDelete = interaction.client.channels.cache.get("1263149356211503127");
     // Get everybody role id
     const everyoneRole = guild.roles.everyone.id;
-
-    if (!channel) {
-      console.error("Channel not found!");
-      await interaction.reply("There was an error finding the channel.");
-      return;
-    }
-
+    // Parse options
+    const title = interaction.options.getString("title")
 
     try {
       const channel = await guild.channels.create({
-        name: "hello",
+        name: `${title}-submission`,
         type: 0,
         parent: "1263077357619777638",
         permissionOverwrites: [
@@ -161,7 +149,7 @@ module.exports = {
       });
 
       channel.send({ embeds: [exampleEmbed], components: [row] });
-      await interaction.reply("Text channel created successfully!");
+      await interaction.reply({content:"Submission channel created successfully!", ephemeral:true});
     } catch (error) {
       console.error("Error creating thread:", error);
       await interaction.reply("There was an error trying to create a thread.");
