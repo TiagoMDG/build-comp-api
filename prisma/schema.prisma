@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Competition {
+  id             Int      @id @default(autoincrement())
+  title          String
+  start          DateTime
+  end            DateTime
+  voteStart      DateTime @map(name: "vote_start")
+  voteEnd        DateTime @map(name: "vote_end")
+  maxVotes       Int      @map(name: "max_votes")
+  maxSubmissions Int      @map(name: "max_submissions")
+  done           Boolean  @default(false)
+  deleted        Boolean  @default(false)
+  entries        Entry[]
+  votes          Vote[]
+}
+
+model Entry {
+  id             Int         @id @default(autoincrement())
+  competitionId  Int         @map(name: "competition_id")
+  title          String
+  entryChannelId String      @map(name: "entry_channel_id")
+  forumPostId    String?     @map(name: "forum_post_id") // Optional field 
+  createdAt      DateTime    @default(now()) @map(name: "created_at")
+  submittedAt    DateTime?   @map(name: "submitted_at") // Optional field 
+  submitted      Boolean     @default(false)
+  invalidated    Boolean     @default(false)
+  competition    Competition @relation(fields: [competitionId], references: [id])
+  authors        Author[]
+  votes          Vote[]
+}
+
+model Author {
+  id      Int    @id @default(autoincrement())
+  entryId Int    @map(name: "entry_id")
+  userId  String @map(name: "user_id")
+  entry   Entry  @relation(fields: [entryId], references: [id])
+}
+
+model Vote {
+  id            Int         @id @default(autoincrement())
+  competitionId Int         @map(name: "competition_id")
+  entryId       Int         @map(name: "entry_id")
+  userId        String      @map(name: "user_id")
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  entry         Entry       @relation(fields: [entryId], references: [id])
+}
+
+model Settings {
+  id      Int    @id @default(autoincrement())
+  setting String
+  value   String
+}

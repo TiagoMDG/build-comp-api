@@ -2,11 +2,7 @@ node_modules
 .env
 
 # Prisma
-/prisma/dev.db          # Ignore the actual database file
-/prisma/migrations/     # Track migration files
-/prisma/migrations/**/*.sql  # Track individual migration SQL files
-/prisma/schema.prisma   # Track the schema definition
-/prisma/seed.js         # Track seed files
+prisma/dev.db          
 
 # IDE settings
 .vscode/
